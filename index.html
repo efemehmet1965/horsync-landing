@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Horsync — Hibrit P2P ve SaaS dosya senkronizasyonu. Zero-knowledge şifreleme, TLS doğrudan peer transferi.">
+  <title>Horsync — Her Yerde Güvenle Senkronize Et.</title>
+
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/images/logo-64.png">
+  <link rel="icon" type="image/png" sizes="128x128" href="assets/images/logo-128.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="assets/images/logo-128.png">
+  <link rel="apple-touch-icon" sizes="64x64" href="assets/images/logo-64.png">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Horsync — Her Yerde Güvenle Senkronize Et.">
+  <meta property="og:description" content="Hibrit P2P ve SaaS dosya senkronizasyonu. Zero-knowledge şifreleme, TLS doğrudan peer transferi.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/Yavuzlar/horsync/main/assets/images/banner.png">
+  <meta property="og:url" content="https://horsync.io">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Horsync">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Horsync — Her Yerde Güvenle Senkronize Et.">
+  <meta name="twitter:description" content="Hibrit P2P ve SaaS dosya senkronizasyonu. Zero-knowledge şifreleme, TLS doğrudan peer transferi.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/Yavuzlar/horsync/main/assets/images/banner.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Outfit', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            emerald: { 400: '#34d399', 500: '#10b981', 600: '#059669' },
+            cyber: { blue: '#3b82f6', amber: '#f59e0b', green: '#10b981' },
+            deep: { DEFAULT: '#05080f', card: '#0a1020', border: 'rgba(255,255,255,0.05)' },
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://unpkg.com/lucide@0.444.0"></script>
+  <!-- Noscript Fallback -->
+  <noscript>
+    <style>
+      #splash { display: none !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+</head>
+<body class="font-body antialiased">
+
+  <!-- ============ SPLASH SCREEN ============ -->
+  <div id="splash" style="position:fixed;inset:0;z-index:99999;background:#05080f;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:30px;transition:opacity 0.5s,visibility 0.5s;">
+    <!-- scanline -->
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(16,185,129,0.3),transparent);animation:splash-scan 2s ease-in-out infinite;pointer-events:none;"></div>
+    <!-- grid -->
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;"></div>
+
+    <!-- logo + rings -->
+    <div style="position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;">
+      <!-- pulse circles -->
+      <div style="position:absolute;width:180px;height:180px;border-radius:50%;border:1px solid rgba(16,185,129,0.3);animation:splash-pulse 1.8s ease-out 0s infinite;"></div>
+      <div style="position:absolute;width:180px;height:180px;border-radius:50%;border:1px solid rgba(59,130,246,0.2);animation:splash-pulse 1.8s ease-out 0.6s infinite;"></div>
+      <div style="position:absolute;width:180px;height:180px;border-radius:50%;border:1px solid rgba(16,185,129,0.15);animation:splash-pulse 1.8s ease-out 1.2s infinite;"></div>
+      <!-- rotating hex rings -->
+      <svg style="position:absolute;width:200px;height:200px;animation:splash-spin 18s linear infinite;" viewBox="0 0 200 200">
+        <polygon points="100,10 190,55 190,145 100,190 10,145 10,55" fill="none" stroke="rgba(16,185,129,0.2)" stroke-width="1" stroke-dasharray="80 100" stroke-linecap="round"/>
+      </svg>
+      <svg style="position:absolute;width:200px;height:200px;animation:splash-spin 12s linear infinite reverse;" viewBox="0 0 200 200">
+        <polygon points="100,25 175,62 175,138 100,175 25,138 25,62" fill="none" stroke="rgba(59,130,246,0.25)" stroke-width="1" stroke-dasharray="60 80" stroke-linecap="round"/>
+      </svg>
+      <svg style="position:absolute;width:200px;height:200px;animation:splash-spin 8s linear infinite;" viewBox="0 0 200 200">
+        <polygon points="100,40 160,70 160,130 100,160 40,130 40,70" fill="none" stroke="rgba(16,185,129,0.15)" stroke-width="0.8" stroke-dasharray="40 60" stroke-linecap="round"/>
+      </svg>
+      <!-- logo img -->
+      <img src="assets/images/logo-128.png" alt="Horsync" id="splash-logo" style="width:96px;height:auto;position:relative;z-index:3;opacity:0;transform:scale(0.3);filter:drop-shadow(0 0 30px rgba(16,185,129,0.6)) drop-shadow(0 0 60px rgba(59,130,246,0.3));">
+    </div>
+
+    <!-- text -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+      <span style="font-family:'Outfit',sans-serif;font-size:2.6rem;font-weight:900;letter-spacing:0.12em;background:linear-gradient(135deg,#10b981 0%,#34d399 30%,#3b82f6 70%,#60a5fa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;transform:translateY(12px);" id="splash-title">HORSYNC</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:500;color:rgba(148,163,184,0.6);letter-spacing:0.15em;opacity:0;transform:translateY(12px);" id="splash-sub">Her Yerde Güvenle Senkronize Et.</span>
+    </div>
+
+    <!-- loading bar -->
+    <div style="width:180px;height:2px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;opacity:0;" id="splash-bar-track">
+      <div style="height:100%;width:0%;background:linear-gradient(90deg,#10b981,#3b82f6);border-radius:2px;transition:width 0.3s;" id="splash-bar"></div>
+    </div>
+  </div>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ============ MOBILE OVERLAY ============ -->
+  <div id="mobile-overlay" class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+
+  <!-- ============ MOBILE MENU ============ -->
+  <div id="mobile-menu" class="mobile-menu">
+    <div class="flex items-center justify-between mb-8">
+      <a href="#" class="flex items-center gap-2" onclick="closeMobileMenu()">
+        <img src="assets/images/logo-128.png" alt="Horsync" class="h-7 w-auto" />
+        <span class="text-lg font-display font-bold text-white">Horsync</span>
+      </a>
+      <button onclick="closeMobileMenu()" class="p-2 text-slate-400 hover:text-white transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <nav class="flex flex-col gap-3">
+      <a href="#architecture" onclick="closeMobileMenu()" data-i18n="nav-arch" class="py-3 px-4 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm font-medium">Mimari</a>
+      <a href="#features" onclick="closeMobileMenu()" data-i18n="nav-features" class="py-3 px-4 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm font-medium">Özellikler</a>
+      <a href="#comparison" onclick="closeMobileMenu()" data-i18n="nav-compare" class="py-3 px-4 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm font-medium">Karşılaştırma</a>
+      <a href="https://github.com/Yavuzlar/horsync" target="_blank" rel="noopener" class="mt-4 py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-all text-sm font-display font-semibold text-center">
+        <i data-lucide="github" class="inline w-4 h-4 mr-2"></i> GitHub
+      </a>
+    </nav>
+    <div class="mt-auto pt-6 border-t border-white/5 flex justify-center gap-1">
+      <button class="lang-btn active" onclick="setLang('tr')" data-lang="tr">TR</button>
+      <button class="lang-btn" onclick="setLang('en')" data-lang="en">EN</button>
+    </div>
+  </div>
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3 group">
+        <img src="assets/images/logo-128.png" alt="Horsync" class="h-9 w-auto" />
+        <span class="text-xl font-display font-bold tracking-tight text-white">Horsync</span>
+      </a>
+      <div class="flex items-center gap-4 md:gap-6">
+        <div class="hidden md:flex items-center gap-6 text-sm text-slate-400 font-medium desktop-nav">
+          <a href="#architecture" data-i18n="nav-arch" class="hover:text-emerald-400 transition-colors">Mimari</a>
+          <a href="#features" data-i18n="nav-features" class="hover:text-cyber-blue transition-colors">Özellikler</a>
+          <a href="#comparison" data-i18n="nav-compare" class="hover:text-amber-400 transition-colors">Karşılaştırma</a>
+          <a href="https://github.com/Yavuzlar/horsync" target="_blank" rel="noopener" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-all text-sm font-display font-semibold">GitHub</a>
+        </div>
+        <!-- Language Switcher -->
+        <div class="hidden md:flex items-center gap-1 bg-white/[0.03] rounded-lg p-0.5 border border-white/[0.06]">
+          <button class="lang-btn active" onclick="setLang('tr')" data-lang="tr">TR</button>
+          <button class="lang-btn" onclick="setLang('en')" data-lang="en">EN</button>
+        </div>
+        <!-- Hamburger -->
+        <button onclick="toggleMobileMenu()" class="hamburger p-2 text-slate-400 hover:text-white transition-colors">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="relative min-h-screen flex items-center justify-center pt-20 pb-20 overflow-hidden grid-pattern">
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="top: -60px;">
+      <div class="relative animate-float">
+        <div class="pulse-ring" style="width:280px;height:280px;top:-140px;left:-140px;animation-delay:0s;"></div>
+        <div class="pulse-ring" style="width:280px;height:280px;top:-140px;left:-140px;animation-delay:1s;"></div>
+        <div class="pulse-ring" style="width:280px;height:280px;top:-140px;left:-140px;animation-delay:2s;border-color:rgba(59,130,246,0.2);"></div>
+        <svg width="280" height="280" viewBox="0 0 280 280" style="filter:drop-shadow(0 0 60px rgba(16,185,129,0.3))">
+          <defs>
+            <radialGradient id="coreGlow" cx="50%" cy="50%">
+              <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.15"/>
+              <stop offset="100%" style="stop-color:transparent"/>
+            </radialGradient>
+          </defs>
+          <circle cx="140" cy="140" r="120" fill="url(#coreGlow)"/>
+          <circle cx="140" cy="140" r="100" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <circle cx="140" cy="140" r="85" fill="none" stroke="rgba(16,185,129,0.15)" stroke-width="1.5" stroke-dasharray="20 80" stroke-linecap="round" class="animate-spin-slow" style="transform-origin: 140px 140px;"/>
+          <circle cx="140" cy="140" r="70" fill="none" stroke="rgba(59,130,246,0.1)" stroke-width="1" stroke-dasharray="40 40" class="animate-spin-slow" style="transform-origin: 140px 140px; animation-direction:reverse; animation-duration:15s;"/>
+          <polygon points="140,40 226,90 226,190 140,240 54,190 54,90" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="1.5"/>
+          <path d="M110 130 L140 100 L170 130" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <path d="M170 150 L140 180 L110 150" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+            <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <circle cx="140" cy="140" r="6" fill="#10b981" opacity="0.8">
+            <animate attributeName="r" values="5;8;5" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="140" cy="40" r="3" fill="#10b981" opacity="0.6"/>
+          <circle cx="226" cy="140" r="3" fill="#3b82f6" opacity="0.6"/>
+          <circle cx="140" cy="240" r="3" fill="#10b981" opacity="0.6"/>
+          <circle cx="54" cy="140" r="3" fill="#3b82f6" opacity="0.6"/>
+          <circle cx="54" cy="90" r="3" fill="#f59e0b" opacity="0.6"/>
+          <circle cx="226" cy="190" r="3" fill="#f59e0b" opacity="0.6"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold tracking-tight leading-tight mb-6">
+        <span class="gradient-text neon-emerald" data-i18n="hero-line1">Her Yerde</span><br/>
+        <span class="text-white" data-i18n="hero-line2">Güvenle Senkronize Et.</span>
+      </h1>
+      <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed" data-i18n-html="hero-desc">
+        Cihazlar arası <span class="text-emerald-400 font-semibold">doğrudan P2P TLS şifreli blok transferi</span> ile
+        <span class="text-cyber-blue font-semibold">SaaS kontrol panelinin yönetim gücünü</span> birleştiren yeni nesil senkronizasyon altyapısı.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://github.com/Yavuzlar/horsync" target="_blank" rel="noopener" class="btn-primary text-lg">
+          <span data-i18n="hero-btn-github">GitHub'da İncele</span>
+        </a>
+        <button onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})" class="btn-glass text-lg">
+          <i data-lucide="shield-check" class="inline w-5 h-5 mr-2 -mt-0.5"></i>
+          <span data-i18n="hero-btn-security">Güvenlik Detayları</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ============ WHAT IS HORSYNC ============ -->
+  <section class="relative py-24 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          <span data-i18n="about-title">Horsync</span> <span class="gradient-text" data-i18n="about-title2">Nedir?</span>
+        </h2>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto" data-i18n="about-subtitle">
+          Verilerinizi tasarım gereği gizli tutan yeni nesil dosya senkronizasyon altyapısı.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div class="glass-card p-8 reveal group">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="p-2.5 rounded-xl bg-red-500/10 border border-red-500/20">
+              <i data-lucide="server-crash" class="w-6 h-6 text-red-400"></i>
+            </div>
+            <h3 class="text-xl font-display font-bold text-white" data-i18n="about-problem-title">Sorun</h3>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed" data-i18n-html="about-problem-desc">
+            Dropbox, Google Drive, OneDrive gibi tüm yaygın senkronizasyon araçları dosyalarınızı
+            <span class="text-red-400/80">merkezi bulut sunucularından</span> geçirir. Verileriniz kontrol
+            etmediğiniz altyapılarda, elinizde olmayan anahtarlarla şifrelenir. Metadata sızıntısı,
+            gözetim, veri ihlalleri — saldırı yüzeyi devasadır.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 reveal group" style="transition-delay: 0.15s;">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+              <i data-lucide="shield-check" class="w-6 h-6 text-emerald-400"></i>
+            </div>
+            <h3 class="text-xl font-display font-bold text-white" data-i18n="about-solution-title">Horsync Çözümü</h3>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed" data-i18n-html="about-solution-desc">
+            Dosyalar <span class="text-emerald-400 font-semibold">cihazlarınız arasında doğrudan</span>
+            TLS 1.3 şifreli kanallarla aktarılır — sunucu yalnızca koordinasyonu sağlar.
+            <span class="text-cyber-blue font-semibold">SaaS kontrol paneli</span> ile tüm peer'ları,
+            kasaları ve izinleri tek yerden yönetirsiniz. Verileriniz her zaman sizde kalır.
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center mb-10 reveal">
+        <h3 class="text-2xl font-display font-bold text-white mb-2" data-i18n="about-how-title">Nasıl Çalışır?</h3>
+        <p class="text-slate-500 text-sm" data-i18n="about-how-sub">Kurulumdan şifreli senkronizasyona üç adım</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal">
+        <div class="glass-card p-6 text-center group">
+          <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-cyber-blue/10 border border-cyber-blue/20 flex items-center justify-center group-hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-shadow">
+            <span class="text-2xl font-display font-bold text-cyber-blue">1</span>
+          </div>
+          <h4 class="text-white font-display font-semibold mb-2" data-i18n="step1-title">Daemon'u Kur</h4>
+          <p class="text-slate-500 text-xs leading-relaxed" data-i18n="step1-desc">
+            Tek komutla Windows, Linux veya macOS'a Horsync arka plan servisini kurar. Sistem init ile kaydolur ve peer ağına otomatik katılır.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 text-center group">
+          <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-shadow">
+            <span class="text-2xl font-display font-bold text-emerald-400">2</span>
+          </div>
+          <h4 class="text-white font-display font-semibold mb-2" data-i18n="step2-title">Peer Keşfi & Kimlik Doğrulama</h4>
+          <p class="text-slate-500 text-xs leading-relaxed" data-i18n="step2-desc">
+            Cihazlar LAN UDP broadcast (port 21027) veya SaaS hub üzerinden birbirini keşfeder. Mutual TLS handshake ile kimlik doğrulanır — sızacak şifre yok.
+          </p>
+        </div>
+
+        <div class="glass-card p-6 text-center group">
+          <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-shadow">
+            <span class="text-2xl font-display font-bold text-amber-400">3</span>
+          </div>
+          <h4 class="text-white font-display font-semibold mb-2" data-i18n="step3-title">Doğrudan P2P Senkronizasyon</h4>
+          <p class="text-slate-500 text-xs leading-relaxed" data-i18n="step3-desc">
+            AES-GCM 256-bit şifreli bloklar doğrudan peer'lar arasında akar. Hub sadece orkestrasyon yapar, verinize asla dokunmaz. Metadata transfer öncesi binary seviyesinde temizlenir.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ============ P2P NETWORK SIMULATION ============ -->
+  <section id="architecture" class="relative py-24 px-6 overflow-hidden scan-line">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          <span class="gradient-text" data-i18n="arch-title">P2P Ağ</span> <span data-i18n="arch-title2">Topolojisi</span>
+        </h2>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto" data-i18n="arch-desc">
+          TLS şifreli bloklar doğrudan peer'lar arasında akar. Hub orkestrasyonu sağlar — verinizi asla görmez.
+        </p>
+      </div>
+
+      <div class="glass-card p-6 md:p-10 reveal">
+        <svg id="network-svg" viewBox="0 0 900 480" class="w-full" style="max-height:520px;">
+          <defs>
+            <pattern id="netGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+            </pattern>
+            <filter id="glow-emerald"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="glow-blue"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="glow-amber"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <rect width="900" height="480" fill="url(#netGrid)" opacity="0.5"/>
+          <line id="conn-hub-pc1" x1="450" y1="140" x2="150" y2="340" class="conn-line"/>
+          <line id="conn-hub-pc2" x1="450" y1="140" x2="750" y2="340" class="conn-line"/>
+          <line id="conn-hub-mob" x1="450" y1="140" x2="450" y2="410" class="conn-line"/>
+          <line id="conn-p2p" x1="150" y1="340" x2="750" y2="340" stroke="#10b981" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.3"/>
+          <g id="tls-indicator" opacity="0">
+            <rect x="370" y="310" width="160" height="28" rx="6" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
+            <text x="450" y="329" text-anchor="middle" fill="#10b981" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">🔒 TLS 1.3 ŞİFRELİ</text>
+          </g>
+          <g id="lock-icon-1" opacity="0">
+            <rect x="230" y="330" width="24" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1.2"/>
+            <path d="M236 330 L236 324 A6 6 0 0 1 248 324 L248 330" fill="none" stroke="#10b981" stroke-width="1.2"/>
+          </g>
+          <g id="lock-icon-2" opacity="0">
+            <rect x="646" y="330" width="24" height="20" rx="3" fill="none" stroke="#10b981" stroke-width="1.2"/>
+            <path d="M652 330 L652 324 A6 6 0 0 1 664 324 L664 330" fill="none" stroke="#10b981" stroke-width="1.2"/>
+          </g>
+          <g transform="translate(450, 140)">
+            <circle r="40" fill="rgba(30,41,59,0.9)" stroke="#3b82f6" stroke-width="2" filter="url(#glow-blue)"/>
+            <rect x="-24" y="-16" width="48" height="32" rx="6" fill="none" stroke="rgba(59,130,246,0.4)" stroke-width="1"/>
+            <text x="0" y="4" text-anchor="middle" fill="#93c5fd" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">HUB</text>
+            <text x="0" y="20" text-anchor="middle" fill="rgba(148,163,184,0.6)" font-family="Inter, sans-serif" font-size="9" data-i18n="arch-hub-label">Orkestratör</text>
+          </g>
+          <g transform="translate(150, 340)">
+            <circle r="35" fill="rgba(15,23,42,0.9)" stroke="#10b981" stroke-width="2" filter="url(#glow-emerald)"/>
+            <rect x="-9" y="-12" width="18" height="13" rx="2" fill="none" stroke="#10b981" stroke-width="1.5"/>
+            <line x1="-5" y1="1" x2="5" y2="1" stroke="#10b981" stroke-width="1.2"/>
+            <line x1="0" y1="1" x2="0" y2="5" stroke="#10b981" stroke-width="1.2"/>
+            <rect x="-3" y="5" width="6" height="2" rx="0.5" fill="none" stroke="#10b981" stroke-width="0.8"/>
+            <text x="0" y="22" text-anchor="middle" fill="#6ee7b7" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600">PC-1</text>
+            <text x="0" y="36" text-anchor="middle" fill="rgba(148,163,184,0.5)" font-family="Inter, sans-serif" font-size="8">192.168.1.10</text>
+          </g>
+          <g transform="translate(750, 340)">
+            <circle r="35" fill="rgba(15,23,42,0.9)" stroke="#10b981" stroke-width="2" filter="url(#glow-emerald)"/>
+            <rect x="-9" y="-12" width="18" height="13" rx="2" fill="none" stroke="#10b981" stroke-width="1.5"/>
+            <line x1="-5" y1="1" x2="5" y2="1" stroke="#10b981" stroke-width="1.2"/>
+            <line x1="0" y1="1" x2="0" y2="5" stroke="#10b981" stroke-width="1.2"/>
+            <rect x="-3" y="5" width="6" height="2" rx="0.5" fill="none" stroke="#10b981" stroke-width="0.8"/>
+            <text x="0" y="22" text-anchor="middle" fill="#6ee7b7" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600">PC-2</text>
+            <text x="0" y="36" text-anchor="middle" fill="rgba(148,163,184,0.5)" font-family="Inter, sans-serif" font-size="8">192.168.1.20</text>
+          </g>
+          <g transform="translate(450, 410)">
+            <circle r="30" fill="rgba(15,23,42,0.9)" stroke="#f59e0b" stroke-width="2" filter="url(#glow-amber)"/>
+            <rect x="-6" y="-10" width="12" height="18" rx="2" fill="none" stroke="#f59e0b" stroke-width="1.2"/>
+            <line x1="-3" y1="-6" x2="3" y2="-6" stroke="#f59e0b" stroke-width="0.8" opacity="0.5"/>
+            <circle cx="0" cy="6" r="1.2" fill="none" stroke="#f59e0b" stroke-width="0.6" opacity="0.5"/>
+            <text x="0" y="20" text-anchor="middle" fill="#fcd34d" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" data-i18n="arch-mobile">Mobil</text>
+            <text x="0" y="32" text-anchor="middle" fill="rgba(148,163,184,0.5)" font-family="Inter, sans-serif" font-size="8">10.0.0.5</text>
+          </g>
+          <g id="packets-container"></g>
+          <g transform="translate(30, 440)">
+            <line x1="0" y1="0" x2="20" y2="0" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <text x="28" y="4" fill="rgba(148,163,184,0.5)" font-family="Inter, sans-serif" font-size="9" data-i18n="arch-legend-hub">Hub Rölesi</text>
+            <line x1="110" y1="0" x2="130" y2="0" stroke="#10b981" stroke-width="1.5"/>
+            <text x="138" y="4" fill="rgba(148,163,184,0.5)" font-family="Inter, sans-serif" font-size="9" data-i18n="arch-legend-p2p">P2P Doğrudan</text>
+          </g>
+        </svg>
+
+        <div class="flex flex-wrap items-center gap-4 mt-8 justify-center reveal">
+          <button id="btn-start-p2p" onclick="startP2PTransfer()" class="btn-primary">
+            <i data-lucide="play-circle" class="inline w-5 h-5 mr-2"></i>
+            <span data-i18n="arch-btn-start">P2P Aktarımını Başlat</span>
+          </button>
+          <button id="btn-reset-net" onclick="resetNetwork()" class="btn-glass text-sm px-6 py-3">
+            <i data-lucide="rotate-ccw" class="inline w-4 h-4 mr-2"></i>
+            <span data-i18n="arch-btn-reset">Sıfırla</span>
+          </button>
+          <span id="net-status" class="text-sm font-mono text-slate-500 ml-2" data-i18n-html="arch-status-idle">
+            ● Bekliyor — Doğrudan P2P blok transferini simüle etmek için tıklayın
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ============ FEATURES ============ -->
+  <section id="features" class="relative py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          <span data-i18n="feat-title">Gizlilik İçin</span> <span class="gradient-text" data-i18n="feat-title2">Tasarlanmıştır</span>
+        </h2>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto" data-i18n="feat-subtitle">
+          Her özellik, ağın düşmanca olduğu varsayımıyla inşa edilmiştir.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="glass-card glow-hover p-8 reveal group">
+          <div class="flex items-start gap-5">
+            <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 shrink-0 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-shadow">
+              <i data-lucide="lock-keyhole" class="w-7 h-7 text-emerald-400"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-display font-bold text-white mb-2" data-i18n="feat1-title">Zero-Knowledge Şifreleme Kasası</h3>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4" data-i18n="feat1-desc">
+                Dosyalar cihazınızdan çıkmadan önce tarayıcı RAM'inde şifrelenir. AES-GCM 256-bit ve PBKDF2 100.000 iterasyon.
+                Sunucu şifre çözme anahtarlarınıza asla sahip olmaz — biz bile verilerinizi okuyamayız.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">AES-GCM 256</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PBKDF2 100k</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" data-i18n="feat1-tag3">İstemci Tarafı</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="glass-card glow-hover p-8 reveal group">
+          <div class="flex items-start gap-5">
+            <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 shrink-0 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-shadow">
+              <i data-lucide="file-search" class="w-7 h-7 text-amber-400"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-display font-bold text-white mb-2" data-i18n="feat2-title">Otomatik Metadata Temizleyici</h3>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4" data-i18n="feat2-desc">
+                Görsellerden GPS EXIF, PDF ve ofis belgelerinden XMP/yazar metadata izlerini
+                binary seviyesinde temizler. Dosyalarınız sıfır adli iz bırakır.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">EXIF GPS</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">XMP Strip</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20" data-i18n="feat2-tag3">Binary Temiz</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="glass-card glow-hover p-8 reveal group">
+          <div class="flex items-start gap-5">
+            <div class="p-3 rounded-xl bg-cyber-blue/10 border border-cyber-blue/20 shrink-0 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-shadow">
+              <i data-lucide="radar" class="w-7 h-7 text-blue-400"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-display font-bold text-white mb-2" data-i18n="feat3-title">LAN UDP Otomatik Keşif</h3>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4" data-i18n="feat3-desc">
+                Siber radar yerel ağınızı UDP port 21027 üzerinden tarar, milisaniyeler içinde peer cihazları keşfeder.
+                TLS 1.2+ şifreli TCP (port 22000) ile doğrudan transfer. LAN'da bulut rölesine gerek yok.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">Port 21027</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">UDP Broadcast</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">&lt;50ms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="glass-card glow-hover p-8 reveal group">
+          <div class="flex items-start gap-5">
+            <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 shrink-0 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-shadow">
+              <i data-lucide="download-cloud" class="w-7 h-7 text-purple-400"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-display font-bold text-white mb-2" data-i18n="feat4-title">Tek Tık Daemon Kurulumu</h3>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4" data-i18n="feat4-desc">
+                Horsync arka plan servisini tek komutla herhangi bir işletim sistemine kurun. Otomatik yapılandırır,
+                sistem daemon'u olarak kaydeder ve peer ağınıza bağlar — sıfır manuel kurulum.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">Windows</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">Linux</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">macOS</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">Systemd</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Chunked Uploads -->
+        <div class="glass-card glow-hover p-8 reveal group">
+          <div class="flex items-start gap-5">
+            <div class="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 shrink-0 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-shadow">
+              <i data-lucide="scissors" class="w-7 h-7 text-cyan-400"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-display font-bold text-white mb-2" data-i18n="feat5-title">Blok Bazlı Chunked Upload</h3>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4" data-i18n="feat5-desc">
+                Dosyalar SHA-256 ile doğrulanan parçalara bölünür. Kesintiden sonra kaldığı yerden devam eder,
+                her chunk bütünlük kontrollü — bozuk veri asla yazılmaz.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">SHA-256</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Resumable</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Chunked</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Bandwidth Governance -->
+        <div class="glass-card glow-hover p-8 reveal group">
+          <div class="flex items-start gap-5">
+            <div class="p-3 rounded-xl bg-pink-500/10 border border-pink-500/20 shrink-0 group-hover:shadow-[0_0_20px_rgba(236,72,153,0.2)] transition-shadow">
+              <i data-lucide="gauge" class="w-7 h-7 text-pink-400"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-display font-bold text-white mb-2" data-i18n="feat6-title">Token-Bucket Bant Genişliği</h3>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4" data-i18n="feat6-desc">
+                Token-bucket rate limiting ile ağ kullanımını hassas şekilde yönetin. Senkronizasyon
+                arka planda çalışırken internet bağlantınızı doyurmaz — siz kontrol edersiniz.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/20">Token-Bucket</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/20">Rate Limit</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/20">QoS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7: Automation Rules -->
+        <div class="glass-card glow-hover p-8 reveal group">
+          <div class="flex items-start gap-5">
+            <div class="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 shrink-0 group-hover:shadow-[0_0_20px_rgba(249,115,22,0.2)] transition-shadow">
+              <i data-lucide="workflow" class="w-7 h-7 text-orange-400"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-display font-bold text-white mb-2" data-i18n="feat7-title">Otomasyon Kuralları</h3>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4" data-i18n="feat7-desc">
+                Şifreleme, metadata temizleme ve arşivleme için yapılandırılabilir politikalar tanımlayın.
+                Kural tabanlı iş akışları ile senkronizasyonu ihtiyacınıza göre otomatikleştirin.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20" data-i18n="feat7-tag1">Politika</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20" data-i18n="feat7-tag2">Arşiv</span>
+                <span class="px-3 py-1 text-xs font-mono rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20" data-i18n="feat7-tag3">Kural Tabanlı</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ============ COMPARISON TABLE ============ -->
+  <section id="comparison" class="relative py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-14 reveal">
+        <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+          <span data-i18n="comp-title">Neden</span> <span class="gradient-text">Horsync</span><span data-i18n="comp-title2">?</span>
+        </h2>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto" data-i18n="comp-subtitle">
+          Bulut, saf P2P, ya da hibrit — mimari, verilerinize kimin sahip olduğunu belirler.
+        </p>
+      </div>
+
+      <div class="glass-card overflow-hidden reveal">
+        <div class="overflow-x-auto">
+        <table class="w-full text-left min-w-[700px]">
+          <thead>
+            <tr class="border-b border-white/5">
+              <th class="p-3 md:p-4 text-sm font-display font-semibold text-slate-400" data-i18n="comp-col-feature">Özellik</th>
+              <th class="p-3 md:p-4 text-sm font-display font-semibold text-red-400/70 text-center">Dropbox / GDrive</th>
+              <th class="p-3 md:p-4 text-sm font-display font-semibold text-amber-400/80 text-center">Syncthing</th>
+              <th class="p-3 md:p-4 text-sm font-display font-semibold text-purple-400/80 text-center">Resilio Sync</th>
+              <th class="p-3 md:p-4 text-sm font-display font-semibold text-emerald-400 text-center">Horsync</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm">
+            <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+              <td class="p-3 md:p-4 text-slate-300 font-medium" data-i18n="comp-r1-label">Mimari</td>
+              <td class="p-3 md:p-4 text-center text-slate-500" data-i18n="comp-r1-cloud">Merkezi — veri sunucuda</td>
+              <td class="p-3 md:p-4 text-center text-amber-300/80" data-i18n="comp-r1-st">Saf P2P — sunucu yok, panel yok</td>
+              <td class="p-3 md:p-4 text-center text-purple-300/80" data-i18n="comp-r1-rs">P2P — özel mülk, yönetim paneli var</td>
+              <td class="p-3 md:p-4 text-center text-emerald-400 font-semibold" data-i18n="comp-r1-hs">Hibrit P2P + SaaS kontrol paneli</td>
+            </tr>
+            <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+              <td class="p-3 md:p-4 text-slate-300 font-medium" data-i18n="comp-r2-label">Şifreleme</td>
+              <td class="p-3 md:p-4 text-center text-slate-500" data-i18n="comp-r2-cloud">TLS aktarımda, anahtar sağlayıcıda</td>
+              <td class="p-3 md:p-4 text-center text-amber-300/80" data-i18n="comp-r2-st">TLS peer arası, cihaz lokal anahtarlar</td>
+              <td class="p-3 md:p-4 text-center text-purple-300/80" data-i18n="comp-r2-rs">TLS peer arası, kapalı kaynak anahtar yönetimi</td>
+              <td class="p-3 md:p-4 text-center text-emerald-400 font-semibold" data-i18n="comp-r2-hs">AES-GCM 256 istemci tarafı + TLS 1.3 peer</td>
+            </tr>
+            <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+              <td class="p-3 md:p-4 text-slate-300 font-medium" data-i18n="comp-r3-label">Sunucu Veriyi Görür mü?</td>
+              <td class="p-3 md:p-4 text-center text-red-400" data-i18n="comp-r3-cloud">Evet — kendi altyapılarında durur</td>
+              <td class="p-3 md:p-4 text-center text-amber-300/80" data-i18n="comp-r3-st">Sunucu yok ki</td>
+              <td class="p-3 md:p-4 text-center text-purple-300/80" data-i18n="comp-r3-rs">Sunucu yok, ancak kapalı kaynak</td>
+              <td class="p-3 md:p-4 text-center text-emerald-400 font-semibold" data-i18n="comp-r3-hs">Asla — hub sadece transferleri orkestre eder</td>
+            </tr>
+            <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+              <td class="p-3 md:p-4 text-slate-300 font-medium" data-i18n="comp-r4-label">Metadata Temizleme</td>
+              <td class="p-3 md:p-4 text-center text-red-400" data-i18n="comp-r4-cloud">EXIF, GPS, yazar izlerini tutar</td>
+              <td class="p-3 md:p-4 text-center text-amber-300/80" data-i18n="comp-r4-st">Ham dosya senkronu — temizleme yok</td>
+              <td class="p-3 md:p-4 text-center text-purple-300/80" data-i18n="comp-r4-rs">Ham dosya senkronu — temizleme yok</td>
+              <td class="p-3 md:p-4 text-center text-emerald-400 font-semibold" data-i18n="comp-r4-hs">Transfer öncesi binary seviyede temizler</td>
+            </tr>
+            <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+              <td class="p-3 md:p-4 text-slate-300 font-medium" data-i18n="comp-r5-label">Yönetim Paneli</td>
+              <td class="p-3 md:p-4 text-center text-slate-500" data-i18n="comp-r5-cloud">Web panel</td>
+              <td class="p-3 md:p-4 text-center text-amber-300/80" data-i18n="comp-r5-st">Cihaz başına lokal UI</td>
+              <td class="p-3 md:p-4 text-center text-purple-300/80" data-i18n="comp-r5-rs">Cihaz başına lokal UI (ücretli)</td>
+              <td class="p-3 md:p-4 text-center text-emerald-400 font-semibold" data-i18n="comp-r5-hs">Merkezi SaaS — tüm peer'lar tek panelden</td>
+            </tr>
+            <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+              <td class="p-3 md:p-4 text-slate-300 font-medium" data-i18n="comp-r6-label">LAN Peer Keşfi</td>
+              <td class="p-3 md:p-4 text-center text-red-400" data-i18n="comp-r6-cloud">Yok — her zaman internet üzerinden</td>
+              <td class="p-3 md:p-4 text-center text-amber-300/80" data-i18n="comp-r6-st">mDNS / lokal keşif</td>
+              <td class="p-3 md:p-4 text-center text-purple-300/80" data-i18n="comp-r6-rs">Lokal keşif (özel protokol)</td>
+              <td class="p-3 md:p-4 text-center text-emerald-400 font-semibold" data-i18n="comp-r6-hs">UDP broadcast — 50ms altı LAN tespiti</td>
+            </tr>
+            <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+              <td class="p-3 md:p-4 text-slate-300 font-medium" data-i18n="comp-r7-label">Kurulum Kolaylığı</td>
+              <td class="p-3 md:p-4 text-center text-slate-500" data-i18n="comp-r7-cloud">Hesap oluştur, uygulamayı kur</td>
+              <td class="p-3 md:p-4 text-center text-amber-300/80" data-i18n="comp-r7-st">Her klasör için manuel cihaz eşleme</td>
+              <td class="p-3 md:p-4 text-center text-purple-300/80" data-i18n="comp-r7-rs">Manuel link/anahtar paylaşımı</td>
+              <td class="p-3 md:p-4 text-center text-emerald-400 font-semibold" data-i18n="comp-r7-hs">Tek tık daemon kurulumu, otomatik mesh</td>
+            </tr>
+            <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+              <td class="p-3 md:p-4 text-slate-300 font-medium" data-i18n="comp-r8-label">Açık Kaynak</td>
+              <td class="p-3 md:p-4 text-center text-red-400" data-i18n="comp-r8-cloud">Hayır — kapalı kaynak, özel mülk</td>
+              <td class="p-3 md:p-4 text-center text-amber-300/80" data-i18n="comp-r8-st">Evet — MPL 2.0</td>
+              <td class="p-3 md:p-4 text-center text-purple-300/80" data-i18n="comp-r8-rs">Hayır — özel mülk lisans</td>
+              <td class="p-3 md:p-4 text-center text-emerald-400 font-semibold" data-i18n="comp-r8-hs">Evet — MIT, tamamen denetlenebilir</td>
+            </tr>
+            <tr class="hover:bg-white/[0.02] transition-colors">
+              <td class="p-3 md:p-4 text-slate-300 font-medium" data-i18n="comp-r9-label">Telemetri & İzleme</td>
+              <td class="p-3 md:p-4 text-center text-red-400" data-i18n="comp-r9-cloud">Kapsamlı analitik ve takip</td>
+              <td class="p-3 md:p-4 text-center text-amber-300/80" data-i18n="comp-r9-st">İsteğe bağlı kullanım raporlama</td>
+              <td class="p-3 md:p-4 text-center text-purple-300/80" data-i18n="comp-r9-rs">Lisans kontrolü ve anonim telemetri</td>
+              <td class="p-3 md:p-4 text-center text-emerald-400 font-semibold" data-i18n="comp-r9-hs">Tasarım gereği sıfır telemetri</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- Bottom highlights -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8 reveal">
+        <div class="glass-card p-5 flex items-center gap-4">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+            <i data-lucide="eye-off" class="w-5 h-5 text-emerald-400"></i>
+          </div>
+          <div>
+            <div class="text-white font-display font-bold text-sm" data-i18n="comp-hl1-title">Zero-Knowledge</div>
+            <div class="text-slate-500 text-xs" data-i18n="comp-hl1-desc">Sunucu dosyalarınızı okuyamaz. Nokta.</div>
+          </div>
+        </div>
+        <div class="glass-card p-5 flex items-center gap-4">
+          <div class="w-10 h-10 rounded-xl bg-cyber-blue/10 border border-cyber-blue/20 flex items-center justify-center shrink-0">
+            <i data-lucide="cpu" class="w-5 h-5 text-blue-400"></i>
+          </div>
+          <div>
+            <div class="text-white font-display font-bold text-sm" data-i18n="comp-hl2-title">Hibrit Mimari</div>
+            <div class="text-slate-500 text-xs" data-i18n="comp-hl2-desc">SaaS dashboard + doğrudan P2P veri düzlemi.</div>
+          </div>
+        </div>
+        <div class="glass-card p-5 flex items-center gap-4">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+            <i data-lucide="code-2" class="w-5 h-5 text-amber-400"></i>
+          </div>
+          <div>
+            <div class="text-white font-display font-bold text-sm" data-i18n="comp-hl3-title">Açık Kaynak (MIT)</div>
+            <div class="text-slate-500 text-xs" data-i18n="comp-hl3-desc">Denetleyin. Fork'layın. Sahip olun. Kara kutu yok.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ============ CTA ============ -->
+  <section id="deploy" class="relative py-24 px-6">
+    <div class="max-w-2xl mx-auto text-center reveal">
+      <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+        <span data-i18n="cta-title">Ağınızın</span> <span class="gradient-text" data-i18n="cta-title2">Kontrolünü</span> <span data-i18n="cta-title3">Elinize Alın.</span>
+      </h2>
+      <p class="text-slate-400 text-lg mb-10 max-w-xl mx-auto" data-i18n="cta-desc">
+        Açık kaynak. MIT lisanslı. Satıcı bağımlılığı yok. Telemetri yok. Dosyalarınız, kurallarınız.
+      </p>
+      <a href="https://github.com/Yavuzlar/horsync" target="_blank" rel="noopener" class="btn-primary text-lg inline-flex items-center gap-3 px-10 py-5">
+        <span class="w-6 h-6 shrink-0 flex items-center justify-center">
+          <i data-lucide="github" class="w-6 h-6"></i>
+        </span>
+        <span data-i18n="cta-btn" class="leading-none">GitHub'da İncele</span>
+        <span class="w-5 h-5 shrink-0 flex items-center justify-center">
+          <i data-lucide="arrow-up-right" class="w-5 h-5 opacity-60"></i>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ YAVUZLAR TEAM ============ -->
+  <section class="relative py-20 px-6 border-t border-white/5 overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.03)_0%,transparent_70%)] pointer-events-none"></div>
+
+    <div class="max-w-2xl mx-auto text-center reveal">
+      <a href="https://yavuzlar.org" target="_blank" rel="noopener" class="inline-block hover:opacity-80 transition-opacity">
+        <img src="assets/images/yavuzlar.png" alt="Yavuzlar Web Güvenliği ve Yazılım Takımı" class="h-16 w-auto mx-auto mb-5" />
+      </a>
+
+      <div class="flex items-center justify-center gap-2 mb-7">
+        <a href="https://github.com/Yavuzlar" target="_blank" rel="noopener" class="p-2 text-slate-500 hover:text-white transition-colors" title="GitHub">
+          <i data-lucide="github" class="w-5 h-5"></i>
+        </a>
+        <a href="https://x.com/siberyavuzlar" target="_blank" rel="noopener" class="p-2 text-slate-500 hover:text-white transition-colors" title="X">
+          <i data-lucide="twitter" class="w-5 h-5"></i>
+        </a>
+        <a href="https://linkedin.com/company/siberyavuzlar" target="_blank" rel="noopener" class="p-2 text-slate-500 hover:text-white transition-colors" title="LinkedIn">
+          <i data-lucide="linkedin" class="w-5 h-5"></i>
+        </a>
+        <a href="https://instagram.com/siberyavuzlar" target="_blank" rel="noopener" class="p-2 text-slate-500 hover:text-white transition-colors" title="Instagram">
+          <i data-lucide="instagram" class="w-5 h-5"></i>
+        </a>
+        <a href="mailto:cyberyavuzlar@gmail.com" class="p-2 text-slate-500 hover:text-white transition-colors" title="E-posta">
+          <i data-lucide="mail" class="w-5 h-5"></i>
+        </a>
+      </div>
+
+      <div class="flex items-center justify-center gap-4">
+        <span class="h-px w-10 bg-white/5"></span>
+        <span class="text-xs text-slate-600 font-mono" data-i18n="yavuzlar-made">Bu proje Yavuzlar Web Güvenliği ve Yazılım Takımı tarafından geliştirilmiştir</span>
+        <span class="h-px w-10 bg-white/5"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="relative border-t border-white/5 py-10 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <img src="assets/images/logo-128.png" alt="Horsync" class="h-7 w-auto" />
+          <span class="text-white font-display font-bold text-lg">Horsync</span>
+        </div>
+
+        <div class="flex items-center gap-6 text-sm text-slate-500">
+          <a href="https://github.com/Yavuzlar/horsync" target="_blank" rel="noopener" class="hover:text-slate-300 transition-colors flex items-center gap-1.5">
+            <i data-lucide="github" class="w-4 h-4"></i> GitHub
+          </a>
+        </div>
+
+        <div class="text-xs text-slate-600 font-mono text-center md:text-right">
+          © 2026 Horsync · MIT Licensed<br/>
+          <span class="text-slate-700" data-i18n="footer-tagline">Telemetri yok. Bulut bağımlılığı yok. Dosyalarınız, kurallarınız.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
