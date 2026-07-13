@@ -1,0 +1,10 @@
+# IDE / Editor folders
+.vscode/
+.idea/
+.claude/
+.agents/
+
+# System files
+Thumbs.db
+Desktop.ini
+.DS_Store
